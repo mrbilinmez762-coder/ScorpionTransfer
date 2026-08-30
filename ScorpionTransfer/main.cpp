@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <thread>
 #include <string>
+#include <algorithm>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -111,7 +112,7 @@ void dosyaServer(SOCKET fileServer)
         for (; toplamAlinan < dosyaBoyutu;)
         {
             int alinacak = static_cast<int>(
-                min(
+                std::min(
                     static_cast<long long>(sizeof(buffer)),
                     dosyaBoyutu - toplamAlinan
                 )
@@ -499,14 +500,23 @@ int main() {
                 INET_ADDRSTRLEN
             );
 
-            if (ipKayit != ip && listeSayisi < 100)
+            bool bulunduMu = false;
+
+            for (int i = 0; i < listeSayisi; i++)
+            {
+                if (liste[i] == ip)
+                {
+                    bulunduMu = true;
+                    break;
+                }
+            }
+
+            if (!bulunduMu && listeSayisi < 100)
             {
                 liste[listeSayisi] = ip;
-				std::cout << "Lutfen bu IP icin bir isim giriniz: ";
-				std::cin >> isim[listeSayisi];
+                std::cout << "Lutfen bu IP icin bir isim giriniz: ";
+                std::cin >> isim[listeSayisi];
                 listeSayisi++;
-
-                ipKayit = ip;
 
                 std::cout << "Bulundu: " << ip << std::endl;
             }
